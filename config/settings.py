@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import sys
-
+import os
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -47,6 +47,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cloudinary_storage',
     'cloudinary',
+
+    'ckeditor',
+    'ckeditor_uploader',
 
     'languages',
 ]
@@ -127,12 +130,74 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+# collectstatic root
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATIC_URL = '/static/'
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Text Editor image storage
+CKEDITOR_UPLOAD_PATH = 'documentation/notes_img'
+
+# Text Editor
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Basic',
+        'skin': 'moono',
+        'toolbar_Basic': [
+            ['Source', '-', 'Bold', 'Italic']
+        ],
+    },
+    'special': {
+        'toolbar': 'Special',
+        'toolbar_Special': [
+            {'name': 'document', 'items': ['Save', 'NewPage']},
+            {'name': 'clipboard', 'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord']},
+            {'name': 'editing', 'items': ['Find', '-', 'SelectAll']},
+            {'name': 'basicstyles',
+             'items': ['Bold', 'Italic', 'Underline', 'Strike', 'Superscript', '-', 'RemoveFormat']},
+            {'name': 'paragraph',
+             'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote']},
+            {'name': 'colors', 'items': ['TextColor', 'BGColor']},
+            '/',
+            {'name': 'align',
+             'items': ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-',
+                       'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
+            {'name': 'links', 'items': ['Link', 'Unlink']},
+            {'name': 'insert',
+             'items': ['Image', 'Table', 'HorizontalRule', 'SpecialChar']},
+            {'name': 'styles', 'items': ['Styles', 'Format', 'Font', 'FontSize']},
+            '/',  # put this to force next toolbar on new line
+            {'name': 'yourcustomtools', 'items': [
+                # put the name of your editor.ui.addButton here
+                'Preview',
+                'Maximize',
+                'CodeSnippet',
+                'Source',
+                'Youtube',
+                'PasteCode',
+            ]},
+        ],
+        'codeSnippet_theme': 'monokai',
+        'extraPlugins': ','.join([
+            'codesnippet',
+            'youtube',
+            'pastecode',
+        ]),
+    }
+}
+
 
 # Cloud storage validation
 CLOUDINARY_STORAGE = {

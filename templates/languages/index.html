@@ -1,0 +1,148 @@
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/open-book.png' %}">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- codesnippet -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/monokai.min.css">
+        <!-- Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <title>
+        Notas
+        {% if name %}
+            | {{ name }}
+            {% if framework_name %}
+                - {{ framework_name }}
+                {% if topic_name %}
+                | {{ topic_name }}
+                {% endif %}
+            {% elif topic_name %}
+                - {{ topic_name }}
+            {% endif %}
+        {% endif %}
+
+    </title>
+
+</head>
+<body>
+    
+    <!--  -->
+    <div class="container">
+
+        <div class="modal"></div>
+
+        <!--Sidebar section-->
+
+        <div id="navMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        
+        <nav class="sidenav">
+            <div class="navbrand">
+                <a href="{% url 'languages:Index' %}">
+                    Inicio
+                </a>
+            </div>
+
+            <!-- Get all languages -->
+            {% for language in languages %}
+                
+                <div class="language nav-link-container {% if language.name == name  %}active{% endif %}">
+                    <a class="language-parent 
+                    {% if language.name == name  %}active{% endif %}" 
+                    href="{% url 'languages:language_view' item_id=language.id name=language.name %}">
+                        {{ language.name }}
+                    </a>
+                    <a class="dropdown-icon {% if language.name == name  %}active{% endif %}"><i class="fa-solid fa-caret-up"></i></i></a>
+                </div>
+                <div class="dropdown-container nav-link-container {% if language.name == name  %}open{% endif %}">
+                    <!-- Get all language.topics -->
+                    {% for topic in only_language_topics %}
+                        {% if topic.language.id == language.id %}
+                        <div class="sidenav-link {% if topic.slug == topic_name  %}active{% endif %}">
+                            <a class="framework-child {% if topic.slug == topic_name  %}active{% endif %}"
+                            href="{% url 'languages:language_topic_view' language_id=language.id name=language.name topic_id=topic.id topic_name=topic.slug%}">
+                                {{ topic.title }}
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                    <!-- Get all language.frameworks -->
+                    {% for framework in language.framework_set.all %}
+                        <div class="language nav-link-container {% if framework.name == framework_name %}active{% endif %}">
+                            <a class="language-child {% if framework.name == framework_name %}active{% endif %}" 
+                            href="{% url 'languages:framework_view' item_id=language.id name=language.name framework_name=framework.name %}">
+                                {{ framework.name }}
+                            </a>
+                            <a class="dropdown-icon {% if framework.name == framework_name %}active{% endif %}"><i class="fa-solid fa-caret-up"></i></a>
+                        </div>
+                        <div class="dropdown-container nav-link-container {% if framework.name == framework_name %}open{% endif %}">
+                            <!-- Get all framework.topics -->
+                            {% for topic in framework.topic_set.all %}
+                            <div class="framework-link {% if topic.slug == topic_name  %}active{% endif %}">
+                                <a class="framework-child {% if topic.slug == topic_name  %}active{% endif %}"
+                                href="{% url 'languages:framework_topic_view' language_id=language.id name=language.name framework_name=framework.name topic_id=topic.id topic_name=topic.slug%}">
+                                    {{ topic.title }}
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </nav>
+        
+        <!--Sidebar section-->
+        
+    {% if selected.title %}
+        <div class="content">
+                <h2 class="content-topic-title">{{ selected.title }}</h2>
+                <div class="content-content">{{ selected.content | safe }}</div>
+        </div>
+        {% elif selected %}
+        <div class="content">
+            <div class="content-description">
+                <img class="content-img" src="{{ selected.image.url }}">
+                    
+                <div class="content-data">
+                    <h2 class="content-title">
+                        {{ selected.name }}
+                        <sup>
+                            <a class="content-url" href="{{ selected.url }}" target="_blank">Link</a>
+                        </sup>
+                    </h2>
+                    {% if selected.language %}
+                            <a class="content-url" href="{% url 'languages:language_view' item_id=selected.language.id name=selected.language.name %}">{{ selected.language }}</a>
+                        {% endif %}
+                        
+                        <div class="content-content">{{ selected.description | safe }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="content content-index">
+            <div class="index-page">
+                <h2 class="index-title">Documentación y Notas</h2>
+                <p class="index-paragraph">Este sitio web fue desarrollado con la finalidad de poner en práctica mi conocimiento y así desenvolverme más en el manejo de django. La premisa es construir proyectos que puedan resultarme útil en algún momento dado.</p>
+                <p class="index-paragraph">Funciona sobre un solo archivo html, cuya estructura fue diseñada para que se muestre de manera dinámica el contenido solicitado. Mi intención con este proyecto era trabajar las consultas a la base de datos haciendo buen uso de los querys y aplicar habilidades basícas de frontend para que el contenido pueda verse desde cualquier tipo de pantalla.</p>
+                <p class="index-paragraph">Su utilidad es la de un blog de notas, pues fue creado para ir guardando puntos que me resulten claves de las tecnologias que voy aprendiendo, de manera tal que pueda acceder a estos de una forma facíl en el momento que lo requiera.</p>
+            </div>
+        </div>
+        {% endif %}
+
+    <script src="{% static 'scripts/script.js' %}"></script>
+
+</body>
+</html>

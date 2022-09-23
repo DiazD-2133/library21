@@ -206,5 +206,18 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': env('CLOUDINARY_API_SECRET')
 }
 
+# New Cloud storage: pythonanywhere need to use api_proxy for uploading files
+
+# import cloudinary
+# cloudinary.config(
+#   cloud_name=env('CLOUDINARY_CLOUD_NAME'),
+#   api_key=env('CLOUDINARY_API_KEY'),
+#   api_secret=env('CLOUDINARY_API_SECRET'),
+#   api_proxy="http://proxy.server:3128"
+# )
+#
+# import cloudinary.uploader
+# import cloudinary.api
+
 # Cloud storage
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

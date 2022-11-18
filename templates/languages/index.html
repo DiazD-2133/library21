@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/monokai.min.css">
         <!-- Icons CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
 
@@ -34,7 +34,7 @@
 
 </head>
 <body>
-    
+
     <!--  -->
     <div class="container">
 
@@ -47,7 +47,7 @@
             <span></span>
             <span></span>
         </div>
-        
+
         <nav class="sidenav">
             <div class="navbrand">
                 <a href="{% url 'languages:Index' %}">
@@ -56,11 +56,12 @@
             </div>
 
             <!-- Get all languages -->
+
             {% for language in languages %}
-                
+
                 <div class="language nav-link-container {% if language.name == name  %}active{% endif %}">
-                    <a class="language-parent 
-                    {% if language.name == name  %}active{% endif %}" 
+                    <a class="language-parent
+                    {% if language.name == name  %}active{% endif %}"
                     href="{% url 'languages:language_view' item_id=language.id name=language.name %}">
                         {{ language.name }}
                     </a>
@@ -80,12 +81,15 @@
                     {% endfor %}
                     <!-- Get all language.frameworks -->
                     {% for framework in language.framework_set.all %}
-                        <div class="language nav-link-container {% if framework.name == framework_name %}active{% endif %}">
-                            <a class="language-child {% if framework.name == framework_name %}active{% endif %}" 
-                            href="{% url 'languages:framework_view' item_id=language.id name=language.name framework_name=framework.name %}">
+                        <div class="language nav-link-container {% if framework.name == framework_name %}active{% endif %}  {% if not framework.image %}dropdown-btn{% endif %}">
+                            <a class="language-child {% if framework.name == framework_name %}active{% endif %}"
+                            {% if framework.image %}
+                            href="{% url 'languages:framework_view' item_id=language.id name=language.name framework_name=framework.name %}"
+                            {% endif %}>
                                 {{ framework.name }}
                             </a>
-                            <a class="dropdown-icon {% if framework.name == framework_name %}active{% endif %}"><i class="fa-solid fa-caret-up"></i></a>
+
+                            <a class="{% if framework.image %}dropdown-icon{% endif %} dropdown-btn-icon {% if framework.name == framework_name %}active{% endif %}"><i class="fa-solid fa-caret-up"></i></a>
                         </div>
                         <div class="dropdown-container nav-link-container {% if framework.name == framework_name %}open{% endif %}">
                             <!-- Get all framework.topics -->
@@ -102,9 +106,9 @@
                 </div>
             {% endfor %}
         </nav>
-        
+
         <!--Sidebar section-->
-        
+
     {% if selected.title %}
         <div class="content">
                 <h2 class="content-topic-title">{{ selected.title }}</h2>
@@ -113,8 +117,9 @@
         {% elif selected %}
         <div class="content">
             <div class="content-description">
-                <img class="content-img" src="{{ selected.image.url }}">
-                    
+                {% if selected.image %}
+                    <img class="content-img" src="{{ selected.image.url }}">
+                {% endif %}
                 <div class="content-data">
                     <h2 class="content-title">
                         {{ selected.name }}
@@ -125,7 +130,7 @@
                     {% if selected.language %}
                             <a class="content-url" href="{% url 'languages:language_view' item_id=selected.language.id name=selected.language.name %}">{{ selected.language }}</a>
                         {% endif %}
-                        
+
                         <div class="content-content">{{ selected.description | safe }}</div>
                     </div>
                 </div>

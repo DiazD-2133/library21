@@ -90,8 +90,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env('NAME_DB'),
+        'HOST': env('HOST_DB'),
+        'USER': env('USER_DB'),
+        'PASSWORD': env('PASSWORD_DB')
     }
 }
 
